@@ -11,6 +11,7 @@ import (
 var connid int
 var conns *list.List
 
+// Chat Handle websocket
 func Chat(ws *websocket.Conn) {
     defer ws.Close()
     item := conns.PushBack(ws)
@@ -26,6 +27,7 @@ func Chat(ws *websocket.Conn) {
     }
 }
 
+// SendMessage send what you say by websocket
 func SendMessage(self *list.Element,data string)  {
     for item:=conns.Front(); item!=nil;item=item.Next(){
         ws,ok := item.Value.(*websocket.Conn)
@@ -40,7 +42,7 @@ func SendMessage(self *list.Element,data string)  {
     }
 }
 
-// 客户端默认显示页面
+// Client 客户端默认显示页面
 func Client(w http.ResponseWriter, r *http.Request) {
     html := `<!doctype html>
 <html>
@@ -101,6 +103,8 @@ func Client(w http.ResponseWriter, r *http.Request) {
 </html>`
     io.WriteString(w, html)
 }
+
+
 func main() {
     conns = list.New()
     http.Handle("/chat", websocket.Handler(Chat))
